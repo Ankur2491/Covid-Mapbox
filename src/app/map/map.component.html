@@ -1,0 +1,42 @@
+<!-- <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 style="text-align: center;">Covid Visualiser</h1>
+        </div>
+    </div> -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="country-form">
+                <mat-form-field class="country-full-width">
+                    <input type="text" placeholder="Search and click on a country for details" aria-label="Number" matInput
+                        [formControl]="myControl" [matAutocomplete]="auto">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                        (optionSelected)="getDetails($event.option.value)">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
+        </div>
+        <!-- <div class="col-md-12">
+            <span class="badge badge-primary">Total: <span class="badge badge-light">1234</span></span>
+        </div>
+        <div class="col-md-12">
+            <span class="badge badge-success">Recovered: <span class="badge badge-light">123</span></span>
+
+        </div>
+        <div class="col-md-12">
+            <span class="badge badge-danger">Deaths: <span class="badge badge-light">12</span></span>
+
+        </div> -->
+    </div>
+</div>
+<div class="map" id="map" class="absolute top left right bottom fill-canvas mapboxgl-map" style="margin-top: 120px;">
+<!-- 
+    <div class="container-fluid">
+        <mgl-map [style]="'mapbox://styles/mapbox/streets-v9'" [zoom]="[3.5]"
+            [center]=" [80.20929129999999,13.0569951]">
+        </mgl-map>
+    </div> -->
