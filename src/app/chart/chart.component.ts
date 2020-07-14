@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from '../data.service';
 import { HttpClient } from '@angular/common/http';
 import { CountryDetails } from '../models/country-details-model';
+import { MapboxService } from '../mapbox.service';
 
 @Component({
   selector: 'app-chart',
@@ -12,11 +13,9 @@ export class ChartComponent implements OnInit {
 
   country_data: CountryDetails;
   last_updated: string;
-  // title = 'line-charts';
   multi: any[];
   view: any[] = [1400, 500];
 
-  // options
   legend: boolean = true;
   showLabels: boolean = true;
   animations: boolean = true;
@@ -38,16 +37,15 @@ export class ChartComponent implements OnInit {
   };
   historicalData: any[] = [{ "name": "Deaths", "series": [] }];
   historicalDataCombined: any[] = [{ "name": "Cases", "series": [] }, { "name": "Recovered", "series": [] }];
-  constructor(private http: HttpClient, private dataService: DataService) {
+  constructor(private http: HttpClient, private dataService: DataService, private ms: MapboxService) {
     this.dataService.currentCountry.subscribe(selectedCountry=>{
       this.selectedCountry = selectedCountry;
     })
-    this.http.get(`https://corona.lmao.ninja/v2/historical/${this.selectedCountry}?lastdays=60`).subscribe((data) => {
+    this.ms.getHistoricalData(this.selectedCountry).subscribe((data) => {
       let cases = data['timeline'].cases;
       let deaths = data['timeline'].deaths;
       let recovered = data['timeline'].recovered;
       let dates = Array.from(Object.keys(cases));
-      //let seriesArr = [];
       for (let i = 1; i < dates.length; i++) {
         let differenceCase = Math.abs(cases[dates[i]] - cases[dates[i - 1]]);
         let differenceDeath = Math.abs(deaths[dates[i]] - deaths[dates[i - 1]]);
@@ -64,16 +62,11 @@ export class ChartComponent implements OnInit {
         this.historicalData[0].series.push(obj2);
         this.historicalDataCombined[0].series.push(obj1);
         this.historicalDataCombined[1].series.push(obj3);
-        //seriesArr.push(obj);
       }
-      //console.log(seriesArr);
-
-      //this.historicalData[0].series = seriesArr;
-      //console.log(this.historicalData);
       this.historicalDataCombined = [...this.historicalDataCombined]
       this.historicalData = [...this.historicalData]
     })
-    this.http.get(`https://corona.lmao.ninja/v2/countries/${this.selectedCountry}?yesterday=true`).subscribe((countryData: CountryDetails)=>{
+    this.ms.getCountryDetails(this.selectedCountry).subscribe((countryData: CountryDetails)=>{
       this.country_data = countryData;
       let lu = this.country_data.updated;
       let date = new Date(0);

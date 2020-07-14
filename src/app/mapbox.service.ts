@@ -1,36 +1,24 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
-import * as mapboxgl from 'mapbox-gl';
- 
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { CountryDetails } from './models/country-details-model';
+
 @Injectable({
-providedIn: 'root'
+  providedIn: 'root'
 })
 export class MapboxService {
- 
-constructor() {
-  Object.getOwnPropertyDescriptor(mapboxgl,"accessToken").set(environment.mapbox.accessToken);
-}
- 
-getMarkers() {
-  const geoJson = [{
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Point',
-      'coordinates': ['80.20929129999999', '13.0569951']
-    },
-    'properties': {
-      'message': 'Chennai'
-    }
-  }, {
-    'type': 'Feature',
-    'geometry': {
-      'type': 'Point',
-      'coordinates': ['77.350048', '12.953847' ]
-    },
-    'properties': {
-      'message': 'bangulare'
-    }
-  }];
-  return geoJson;
-}
+
+  constructor(private http: HttpClient) { }
+
+  getWorldData(): Observable<any> {
+    return this.http.get('https://covid-service.netlify.app/.netlify/functions/api/worldData');
+  }
+
+  getHistoricalData(country: string): Observable<any> {
+    return this.http.get(`https://covid-service.netlify.app/.netlify/functions/api/historicalData/${country}`);
+  }
+
+  getCountryDetails(country: string): Observable<any> {
+    return this.http.get(`https://covid-service.netlify.app/.netlify/functions/api/countryData/${country}`);
+  }
 }

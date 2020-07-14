@@ -15,6 +15,7 @@ import { ChartComponent } from './chart/chart.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CustomPopupComponent } from './popup/popup.component';
 import { DynamicComponentService } from './dynamic-component.service';
+import { MapboxService } from './mapbox.service';
 
 
 @NgModule({
@@ -41,7 +42,7 @@ import { DynamicComponentService } from './dynamic-component.service';
       accessToken: 'pk.eyJ1IjoiYW5rdXIyNCIsImEiOiJja2Nhb2psb2sxbGM0MnlsampzZXkxaHB2In0.VexYJAgwFU6BKws5-zasNQ'
     })
   ],
-  providers: [DynamicComponentService],
+  providers: [DynamicComponentService, MapboxService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

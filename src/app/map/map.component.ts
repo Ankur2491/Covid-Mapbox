@@ -9,6 +9,7 @@ import { DataService } from '../data.service';
 import { Router } from '@angular/router';
 import { DynamicComponentService } from '../dynamic-component.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MapboxService } from '../mapbox.service';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -25,12 +26,11 @@ export class MapComponent implements OnInit {
   lng = 80.20929129999999;
   center = [this.lng, this.lat];
   geoJson = {};
-  constructor(private http: HttpClient, private dataService: DataService, private router: Router, private dynamicComponentService: DynamicComponentService,public elementRef : ElementRef, public ngZone: NgZone, private _sanitizer: DomSanitizer) { }
+  constructor(private http: HttpClient, private dataService: DataService, private router: Router, private dynamicComponentService: DynamicComponentService, public elementRef: ElementRef, public ngZone: NgZone, private _sanitizer: DomSanitizer, private ms: MapboxService) { }
   options = [];
   worldData = {};
   ngOnInit(): void {
     Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set('pk.eyJ1IjoiYW5rdXIyNCIsImEiOiJja2Nhb2psb2sxbGM0MnlsampzZXkxaHB2In0.VexYJAgwFU6BKws5-zasNQ');
-    //mapboxgl.accessToken = environment.mapbox.accessToken;
     this.map = new mapboxgl.Map({
       container: 'map',
       style: this.style,
@@ -38,32 +38,20 @@ export class MapComponent implements OnInit {
       center: [this.lng, this.lat]
     });
     this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }));
-    // this.map.on('click', (event) => {
-    //   let vals = event.lngLat;
-    //   console.log(vals);
-    //   this.http.get('https://api.mapbox.com/geocoding/v5/mapbox.places/' + vals.lng + ',' + vals.lat + '.json?access_token=' + environment.mapbox.accessToken).subscribe((data) => {
-    //     let len = data['features'].length;
-    //     let selectedCountry = data['features'][len - 1].place_name;
-    //     this.dataService.changeCountry(selectedCountry);
-    //     this.dataService.changeMessage(false);
-    //   })
-    // })
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
     );
 
-    this.http.get('https://2019ncov.asia/api/country_region').subscribe((totalData) => {
+    this.ms.getWorldData().subscribe((totalData) => {
       let res = totalData['results'];
       res.forEach(element => {
         this.options.push(element.country_region);
         let entry = { 'confirmed': element.confirmed, 'deaths': element.deaths, 'recovered': element.recovered };
         this.worldData[element.country_region] = entry;
       });
-      // console.log(this.worldData);
       this.http.get('assets/country.json').subscribe(data => {
         this.geoJson = data;
-        // console.log(this.geoJson);
         this.geoJson['features'].forEach(marker => {
           var el = document.createElement('div');
           el.className = 'marker';
@@ -72,12 +60,10 @@ export class MapComponent implements OnInit {
             c_data = this.worldData[marker.properties.country];
           else
             c_data = { 'confirmed': 'Not Available', 'deaths': 'Not Available', 'recovered': 'Not Available' }
-          // console.log(marker.properties.country, c_data);
-          //let popupContent = this.dynamicComponentService.injectComponent(CustomPopupComponent,x=>x.message = "Hi There");
           new mapboxgl.Marker(el)
             .setLngLat(marker.geometry.coordinates)
             .setPopup(new mapboxgl.Popup({ offset: 25 })
-            .setHTML('<h4><b>' + marker.properties.country + '(capital:' + marker.properties.city + ')</b></h4><h4> Confirmed Cases:' + c_data["confirmed"] + '</h4><h4> Recovered Cases:' + c_data["recovered"] + '</h4><h4> Death Cases: ' + c_data["deaths"])
+              .setHTML('<h4><b>' + marker.properties.country + '(capital:' + marker.properties.city + ')</b></h4><h4> Confirmed Cases:' + c_data["confirmed"] + '</h4><h4> Recovered Cases:' + c_data["recovered"] + '</h4><h4> Death Cases: ' + c_data["deaths"])
             )
             .addTo(this.map)
         });
