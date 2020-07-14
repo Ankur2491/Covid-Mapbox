@@ -53,7 +53,7 @@ export class MapComponent implements OnInit {
       map(value => this._filter(value))
     );
 
-    this.http.get('https://35.224.154.91:5636/worldData').subscribe((totalData) => {
+    this.http.get('https://2019ncov.asia/api/country_region').subscribe((totalData) => {
       let res = totalData['results'];
       res.forEach(element => {
         this.options.push(element.country_region);

@@ -42,7 +42,7 @@ export class ChartComponent implements OnInit {
     this.dataService.currentCountry.subscribe(selectedCountry=>{
       this.selectedCountry = selectedCountry;
     })
-    this.http.get(`https://35.224.154.91:5636/historicalData/${this.selectedCountry}`).subscribe((data) => {
+    this.http.get(`https://corona.lmao.ninja/v2/historical/${this.selectedCountry}?lastdays=60`).subscribe((data) => {
       let cases = data['timeline'].cases;
       let deaths = data['timeline'].deaths;
       let recovered = data['timeline'].recovered;
@@ -73,7 +73,7 @@ export class ChartComponent implements OnInit {
       this.historicalDataCombined = [...this.historicalDataCombined]
       this.historicalData = [...this.historicalData]
     })
-    this.http.get(`https://35.224.154.91:5636/countryData/${this.selectedCountry}`).subscribe((countryData: CountryDetails)=>{
+    this.http.get(`https://corona.lmao.ninja/v2/countries/${this.selectedCountry}?yesterday=true`).subscribe((countryData: CountryDetails)=>{
       this.country_data = countryData;
       let lu = this.country_data.updated;
       let date = new Date(0);
