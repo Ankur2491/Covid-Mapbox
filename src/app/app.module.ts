@@ -16,6 +16,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CustomPopupComponent } from './popup/popup.component';
 import { DynamicComponentService } from './dynamic-component.service';
 import { MapboxService } from './mapbox.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { StatsComponent } from './stats/stats.component';
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import { MapboxService } from './mapbox.service';
     AppComponent,
     MapComponent,
     ChartComponent,
-    CustomPopupComponent
+    CustomPopupComponent,
+    NavbarComponent,
+    StatsComponent
   ],
   imports: [
     BrowserModule,

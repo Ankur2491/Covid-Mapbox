@@ -1,13 +1,26 @@
-<div style="background-color: black;">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
-                <button class="btn btn-link" (click)="home()">Go back to world map</button>
-            </div>
+            <form class="country-form">
+                <mat-form-field class="country-full-width">
+                    <input type="text" placeholder="Search and click on a country for details" aria-label="Number"
+                        matInput [formControl]="myControl" [matAutocomplete]="auto">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                        (optionSelected)="getDetails($event.option.value)">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
+    <div class="d-flex justify-content-center" *ngIf="showSpinner">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+        <div class="container-fluid" *ngIf="country_data">
+        <div class="row" style="background-color: black;">
             <div *ngIf="country_data" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                 <div class="tile">
                     <div class="wrapper" style="background-color: #202020;">
@@ -17,54 +30,54 @@
                         </div>
                         <small style="color: grey;"><b>TotalPopulation:</b> {{country_data.population}}</small>
                     </div>
-                        <div class="stats">
+                    <div class="stats">
 
-                            <div>
-                                <strong>Total confirmed cases: </strong> {{country_data.cases}}
-                            </div>
-
-                            <div>
-                                <strong>Total recovered cases:</strong> {{country_data.recovered}}
-                            </div>
-
-                            <div>
-                                <strong>Total deaths cases:</strong> {{country_data.deaths}}
-                            </div>
-
+                        <div>
+                            <strong>Total confirmed cases: </strong> {{country_data.cases}}
                         </div>
-                        <div class="stats">
 
-                            <div>
-                                <strong>Total cases today: </strong> {{country_data.todayCases}}
-                            </div>
-
-                            <div>
-                                <strong>Total recovered today:</strong> {{country_data.todayRecovered}}
-                            </div>
-
-                            <div>
-                                <strong>Total deaths today:</strong> {{country_data.todayDeaths}}
-                            </div>
-
+                        <div>
+                            <strong>Total recovered cases:</strong> {{country_data.recovered}}
                         </div>
-                        <div class="stats">
 
-                            <div>
-                                <strong>Total active cases: </strong> {{country_data.active}}
-                            </div>
-
-                            <div>
-                                <strong>Total critical cases:</strong> {{country_data.critical}}
-                            </div>
-
-                            <div>
-                                <strong>Cases per million:</strong> {{country_data.casesPerOneMillion}}
-                            </div>
-
+                        <div>
+                            <strong>Total deaths cases:</strong> {{country_data.deaths}}
                         </div>
+
+                    </div>
+                    <div class="stats">
+
+                        <div>
+                            <strong>Total cases today: </strong> {{country_data.todayCases}}
+                        </div>
+
+                        <div>
+                            <strong>Total recovered today:</strong> {{country_data.todayRecovered}}
+                        </div>
+
+                        <div>
+                            <strong>Total deaths today:</strong> {{country_data.todayDeaths}}
+                        </div>
+
+                    </div>
+                    <div class="stats">
+
+                        <div>
+                            <strong>Total active cases: </strong> {{country_data.active}}
+                        </div>
+
+                        <div>
+                            <strong>Total critical cases:</strong> {{country_data.critical}}
+                        </div>
+
+                        <div>
+                            <strong>Cases per million:</strong> {{country_data.casesPerOneMillion}}
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12" *ngIf="historicalDataCombined">
                 <p style="color:grey"><u>The following graphs show the per day rise/fall in the respective
                         counts.</u></p>
                 <p style="color:grey">Active & Recovered cases(Past 60 days):</p>
@@ -78,16 +91,17 @@
                     </ngx-charts-line-chart>
                 </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12" *ngIf="historicalData">
                 <p style="color: grey;">Death Cases(Past 60 days):</p>
                 <hr />
+                <div style="height: 70vh;">
                 <ngx-charts-line-chart [scheme]="colorSchemeDeath" [legend]="legend" [showXAxisLabel]="showXAxisLabel"
                     [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis" [yAxis]="yAxis" [xAxisLabel]="xAxisLabel"
                     [yAxisLabel]="yAxisLabel" [timeline]="timeline" [results]="historicalData" [showGridLines]="false"
                     (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)"
                     style="fill: grey;">
                 </ngx-charts-line-chart>
+                </div>
             </div>
         </div>
     </div>
-</div>

@@ -1,5 +1,4 @@
 import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
-import { environment } from '../../environments/environment';
 import * as mapboxgl from 'mapbox-gl';
 import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
@@ -37,7 +36,8 @@ export class MapComponent implements OnInit {
       zoom: 3.5,
       center: [this.lng, this.lat]
     });
-    this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }));
+    var comp = new mapboxgl.NavigationControl({ showCompass: false, showZoom: true});
+    this.map.addControl(comp,'bottom-right');
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
@@ -63,7 +63,7 @@ export class MapComponent implements OnInit {
           new mapboxgl.Marker(el)
             .setLngLat(marker.geometry.coordinates)
             .setPopup(new mapboxgl.Popup({ offset: 25 })
-              .setHTML('<h4><b>' + marker.properties.country + '(capital:' + marker.properties.city + ')</b></h4><h4> Confirmed Cases:' + c_data["confirmed"] + '</h4><h4> Recovered Cases:' + c_data["recovered"] + '</h4><h4> Death Cases: ' + c_data["deaths"])
+              .setHTML('<p><b>' + marker.properties.country + '(capital:' + marker.properties.city + ')</b></p><p> Confirmed Cases:' + c_data["confirmed"] + '</p><p> Recovered Cases:' + c_data["recovered"] + '</p><p> Death Cases: ' + c_data["deaths"]+'</p>')
             )
             .addTo(this.map)
         });
