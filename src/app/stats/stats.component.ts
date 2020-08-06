@@ -57,20 +57,28 @@ export class StatsComponent implements OnInit {
     let previousDateObj = new Date(currentDateObj.getTime() - 180 * 24 * 60 * 60 * 1000);
     let previousMonth = (previousDateObj.getMonth() + 1).toString();
     let currentMonth = (currentDateObj.getMonth() + 1).toString();
+    let previousDate = previousDateObj.getDate().toString();
+    let currentDate = currentDateObj.getDate().toString();
     if (previousMonth.length == 1)
       previousMonth = '0' + previousMonth;
     if (currentMonth.length == 1)
       currentMonth = '0' + currentMonth;
-    this.previousDate = previousDateObj.getFullYear().toString() + '-' + previousMonth + '-' + previousDateObj.getDate();
-    this.currentDate = currentDateObj.getFullYear().toString() + '-' + currentMonth + '-' + currentDateObj.getDate();
+    if (previousDate.length == 1) {
+      previousDate = '0' + previousDate;
+    }
+    if (currentDate.length == 1) {
+      currentDate = '0' + currentDate;
+    }
+    this.previousDate = previousDateObj.getFullYear().toString() + '-' + previousMonth + '-' + previousDate;
+    this.currentDate = currentDateObj.getFullYear().toString() + '-' + currentMonth + '-' + currentDate;
     payload.countries.sort((a, b) => a.Confirmed < b.Confirmed ? 1 : -1);
     this.topCountriesCases = payload.countries.slice(0, 5);
     this.confirmedPerMonth();
     payload.countries.sort((a, b) => a.Recovered < b.Recovered ? 1 : -1);
-    this.topCountriesRecovered = payload.countries.slice(0,5);
+    this.topCountriesRecovered = payload.countries.slice(0, 5);
     this.recoveredPerMonth();
     payload.countries.sort((a, b) => a.Deaths < b.Deaths ? 1 : -1);
-    this.topCountriesDeaths = payload.countries.slice(0,5);
+    this.topCountriesDeaths = payload.countries.slice(0, 5);
     this.deathsPerMonth();
   }
   onSelect(data): void {
@@ -97,7 +105,7 @@ export class StatsComponent implements OnInit {
       }
       this.casesCollection.push(obj);
     })
-    this.casesCollection.sort((a,b)=>a.series.length<b.series.length?1: -1);
+    this.casesCollection.sort((a, b) => a.series.length < b.series.length ? 1 : -1);
     console.log(this.casesCollection);
     this.casesCollection = [...this.casesCollection];
   }
@@ -116,7 +124,7 @@ export class StatsComponent implements OnInit {
       }
       this.recoveredCollection.push(obj);
     })
-    this.recoveredCollection.sort((a,b)=>a.series.length<b.series.length?1:-1); 
+    this.recoveredCollection.sort((a, b) => a.series.length < b.series.length ? 1 : -1);
     console.log(this.recoveredCollection);
     this.recoveredCollection = [...this.recoveredCollection];
   }
@@ -135,7 +143,7 @@ export class StatsComponent implements OnInit {
       }
       this.deathsCollection.push(obj);
     })
-    this.deathsCollection.sort((a,b)=>a.series.length<b.series.length?1:-1);
+    this.deathsCollection.sort((a, b) => a.series.length < b.series.length ? 1 : -1);
     console.log(this.deathsCollection);
     this.deathsCollection = [...this.deathsCollection];
   }
@@ -143,21 +151,21 @@ export class StatsComponent implements OnInit {
   async confirmedPerMonth() {
     for (let countryObj of this.topCountriesCases) {
       // this.http.get(`http://api.coronatracker.com/v3/analytics/trend/country?countryCode=${countryObj.Code}&startDate=${this.previousDate}&endDate=${this.currentDate}`).subscribe((countryTimeline: Array<any>) => {
-      let countryTimeline = await this.service.getTimeline(countryObj.Code,this.previousDate, this.currentDate);
+      let countryTimeline = await this.service.getTimeline(countryObj.Code, this.previousDate, this.currentDate);
       let prevMonth = countryTimeline[0].last_updated.split('-')[1];
-        let totalForPrevMonth = 0;
-        let countryCode = countryTimeline[0].country_code;
-        this.calculatedCases[countryCode] = [];
-        for (let i = 1; i < countryTimeline.length; i++) {
-          let currentMonth = countryTimeline[i].last_updated.split('-')[1];
-          if (currentMonth != prevMonth) {
-            let valLast = countryTimeline[i - 1].total_confirmed;
-            let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
-            totalForPrevMonth = valLast;
-            prevMonth = currentMonth;
-            this.calculatedCases[countryCode].push(obj);
-          }
+      let totalForPrevMonth = 0;
+      let countryCode = countryTimeline[0].country_code;
+      this.calculatedCases[countryCode] = [];
+      for (let i = 1; i < countryTimeline.length; i++) {
+        let currentMonth = countryTimeline[i].last_updated.split('-')[1];
+        if (currentMonth != prevMonth) {
+          let valLast = countryTimeline[i - 1].total_confirmed;
+          let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
+          totalForPrevMonth = valLast;
+          prevMonth = currentMonth;
+          this.calculatedCases[countryCode].push(obj);
         }
+      }
     }
     this.formCasesCollection();
   }
@@ -165,42 +173,42 @@ export class StatsComponent implements OnInit {
   async recoveredPerMonth() {
     for (let countryObj of this.topCountriesRecovered) {
       // this.http.get(`http://api.coronatracker.com/v3/analytics/trend/country?countryCode=${countryObj.Code}&startDate=${this.previousDate}&endDate=${this.currentDate}`).subscribe((countryTimeline: Array<any>) => {
-      let countryTimeline = await this.service.getTimeline(countryObj.Code,this.previousDate, this.currentDate);
+      let countryTimeline = await this.service.getTimeline(countryObj.Code, this.previousDate, this.currentDate);
       let prevMonth = countryTimeline[0].last_updated.split('-')[1];
-        let totalForPrevMonth = 0;
-        let countryCode = countryTimeline[0].country_code;
-        this.calculatedRecovered[countryCode] = [];
-        for (let i = 1; i < countryTimeline.length; i++) {
-          let currentMonth = countryTimeline[i].last_updated.split('-')[1];
-          if (currentMonth != prevMonth) {
-            let valLast = countryTimeline[i - 1].total_recovered;
-            let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
-            totalForPrevMonth = valLast;
-            prevMonth = currentMonth;
-            this.calculatedRecovered[countryCode].push(obj);
-          }
+      let totalForPrevMonth = 0;
+      let countryCode = countryTimeline[0].country_code;
+      this.calculatedRecovered[countryCode] = [];
+      for (let i = 1; i < countryTimeline.length; i++) {
+        let currentMonth = countryTimeline[i].last_updated.split('-')[1];
+        if (currentMonth != prevMonth) {
+          let valLast = countryTimeline[i - 1].total_recovered;
+          let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
+          totalForPrevMonth = valLast;
+          prevMonth = currentMonth;
+          this.calculatedRecovered[countryCode].push(obj);
         }
+      }
     }
     this.formRecoveredCollection();
   }
   async deathsPerMonth() {
     for (let countryObj of this.topCountriesDeaths) {
       // this.http.get(`http://api.coronatracker.com/v3/analytics/trend/country?countryCode=${countryObj.Code}&startDate=${this.previousDate}&endDate=${this.currentDate}`).subscribe((countryTimeline: Array<any>) => {
-      let countryTimeline = await this.service.getTimeline(countryObj.Code,this.previousDate, this.currentDate);
+      let countryTimeline = await this.service.getTimeline(countryObj.Code, this.previousDate, this.currentDate);
       let prevMonth = countryTimeline[0].last_updated.split('-')[1];
-        let totalForPrevMonth = 0;
-        let countryCode = countryTimeline[0].country_code;
-        this.calculatedDeaths[countryCode] = [];
-        for (let i = 1; i < countryTimeline.length; i++) {
-          let currentMonth = countryTimeline[i].last_updated.split('-')[1];
-          if (currentMonth != prevMonth) {
-            let valLast = countryTimeline[i - 1].total_deaths;
-            let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
-            totalForPrevMonth = valLast;
-            prevMonth = currentMonth;
-            this.calculatedDeaths[countryCode].push(obj);
-          }
+      let totalForPrevMonth = 0;
+      let countryCode = countryTimeline[0].country_code;
+      this.calculatedDeaths[countryCode] = [];
+      for (let i = 1; i < countryTimeline.length; i++) {
+        let currentMonth = countryTimeline[i].last_updated.split('-')[1];
+        if (currentMonth != prevMonth) {
+          let valLast = countryTimeline[i - 1].total_deaths;
+          let obj = { [this.monthMap[prevMonth]]: valLast - totalForPrevMonth };
+          totalForPrevMonth = valLast;
+          prevMonth = currentMonth;
+          this.calculatedDeaths[countryCode].push(obj);
         }
+      }
     }
     this.formDeathsCollection();
   }
