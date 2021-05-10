@@ -1,0 +1,8 @@
+.dropdown-menu{
+    height: 400px;
+    overflow-y: auto;    
+}
+
+small{
+    color: grey;
+}

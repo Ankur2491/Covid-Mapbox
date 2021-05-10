@@ -18,6 +18,7 @@ import { DynamicComponentService } from './dynamic-component.service';
 import { MapboxService } from './mapbox.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StatsComponent } from './stats/stats.component';
+import { IndiaComponent } from './india/india.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { StatsComponent } from './stats/stats.component';
     ChartComponent,
     CustomPopupComponent,
     NavbarComponent,
-    StatsComponent
+    StatsComponent,
+    IndiaComponent
   ],
   imports: [
     BrowserModule,

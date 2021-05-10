@@ -1,0 +1,67 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{selectedState}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a *ngFor="let state of states" class="dropdown-item" (click)="showStateData(state)">{{state}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div *ngIf="districts.length>0" class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{selectedDistrict}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a *ngFor="let district of districts" class="dropdown-item"
+                        (click)="showDistrictData(district)">{{district}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <div *ngIf="showCard" class="row">
+        <div class="col-md-6 offset-md-4">
+            <div class="card" style="width: 28rem;">
+                <div class="card-body">
+                    <h5 *ngIf="selectedState!='Select State' && selectedDistrict=='Select District'" class="card-title">
+                        {{selectedState}}</h5>
+                    <h5 *ngIf="selectedState!='Select State' && selectedDistrict!='Select District'" class="card-title">
+                        {{selectedDistrict}}({{selectedState}})</h5>
+                    <small *ngIf="meta['tested']!=undefined">Last Updated: {{meta['tested']['last_updated']}},</small>
+                    <small> Total Population: {{meta['population']}}</small>
+                    <hr />
+                    <h5>1 day delta:</h5>
+                    <hr/>
+                    <h6>Confirmed: <span>{{delta['confirmed']}}</span></h6>
+                    <h6>Deceased: <span>{{delta['deceased']}}</span></h6>
+                    <h6>Recovered: <span>{{delta['recovered']}}</span></h6>
+                    <h6>Tested: <span>{{delta['tested']}}</span></h6>
+                    <h6>Vaccinated: <span>{{delta['vaccinated']}}</span></h6>
+                    <hr/>
+                    <h5>Last 7 days delta:</h5>
+                    <hr/>
+                    <h6>Confirmed: <span>{{delta7['confirmed']}}</span></h6>
+                    <h6>Deceased: <span>{{delta7['deceased']}}</span></h6>
+                    <h6>Recovered: <span>{{delta7['recovered']}}</span></h6>
+                    <h6>Tested: <span>{{delta7['tested']}}</span></h6>
+                    <h6>Vaccinated: <span>{{delta7['vaccinated']}}</span></h6>
+                    <hr/>
+                    <h5>Total cases:</h5>
+                    <hr/>
+                    <h6>Confirmed: <span>{{total['confirmed']}}</span></h6>
+                    <h6>Deceased: <span>{{total['deceased']}}</span></h6>
+                    <h6>Recovered: <span>{{total['recovered']}}</span></h6>
+                    <h6>Tested: <span>{{total['tested']}}</span></h6>
+                    <h6>Vaccinated: <span>{{total['vaccinated']}}</span></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
