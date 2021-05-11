@@ -37,6 +37,7 @@
                     <small *ngIf="meta['tested']!=undefined">Last Updated: {{meta['tested']['last_updated']}},</small>
                     <small> Total Population: {{meta['population']}}</small>
                     <hr />
+                    <div *ngIf="delta!=undefined">
                     <h5>1 day delta:</h5>
                     <hr/>
                     <h6>Confirmed: <span>{{delta['confirmed']}}</span></h6>
@@ -45,6 +46,7 @@
                     <h6>Tested: <span>{{delta['tested']}}</span></h6>
                     <h6>Vaccinated: <span>{{delta['vaccinated']}}</span></h6>
                     <hr/>
+                    </div>
                     <h5>Last 7 days delta:</h5>
                     <hr/>
                     <h6>Confirmed: <span>{{delta7['confirmed']}}</span></h6>
